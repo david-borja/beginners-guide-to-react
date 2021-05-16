@@ -1,14 +1,87 @@
+<!-- How do you put two variables side by side and pass them both as the first argument to ReactDOM.render() without using a div as a parent? - It is very easy to do that in HTML, but's impossible to do that in React (well, it seems we can pass an array). That's why we have fragments
+-->
+
+<!-- Vanilla JS without Fragment, (using arrays) -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script type="text/javascript">
+    const rootElement = document.getElementById("root");
+    const helloSpan = React.createElement("span", null, "Hello");
+    const worldSpan = React.createElement("span", null, "World");
+    const element = [helloSpan, " ", worldSpan];
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- Vanilla JS with Fragment -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script type="text/javascript">
+    const rootElement = document.getElementById("root");
+    const helloSpan = React.createElement("span", null, "Hello");
+    const worldSpan = React.createElement("span", null, "World");
+    const element = React.createElement(React.Fragment, null, [
+      helloSpan,
+      " ",
+      worldSpan,
+    ]);
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- JSX without Fragment -->
 <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
   <script type="text/babel">
+    const rootElement = document.getElementById("root");
+    const helloSpan = <span>Hello</span>;
+    const worldSpan = <span>World</span>;
+    const element = [helloSpan, " ", worldSpan];
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- JSX with Fragment -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+    const element = (
+      <React.Fragment>
+        <span>Hello</span> <span>World</span>
+      </React.Fragment>
+    );
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- JSX with Fragment shorthand -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
     const element = (
       <>
         <span>Hello</span> <span>World</span>
       </>
-    )
-    ReactDOM.render(element, document.getElementById('root'))
+    );
+    ReactDOM.render(element, rootElement);
   </script>
 </body>
+
+<!-- RESOURCES:
+  https://css-tricks.com/render-children-in-react-using-fragment-or-array-components/
+-->

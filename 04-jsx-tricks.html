@@ -1,14 +1,114 @@
+<!-- EXERCISE FOUR: MULTIPLE CHILDREN
+  Write code using React to generate the html code below.
+  <div id="root">
+    <div class="container">
+        <span>Hello</span>
+        <span>World</span>
+    </div>
+</div>
+-->
+
+<!-- My solution using React.createElement -->
 <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/javascript">
+    const rootElement = document.getElementById("root");
+    const helloChild = React.createElement("span", null, "Hello");
+    const worldChild = React.createElement("span", null, "World");
+    const element = React.createElement("div", { className: "container" }, [
+      helloChild,
+      worldChild,
+    ]);
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- Mithi's solution using React.createElement, she does it without using the children argument, CLEANER -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script type="text/javascript">
+    const helloElement = React.createElement("span", null, "Hello");
+    const worldElement = React.createElement("span", null, "World");
+    const rootElement = document.getElementById("root");
+    const element = React.createElement("div", {
+      className: "container",
+      children: [helloElement, " ", worldElement],
+    });
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- My solution Using JSX -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
   <script type="text/babel">
-    const rootElement = document.getElementById('root')
-    const children = 'Hello World'
-    const className = 'container'
+    const rootElement = document.getElementById("root");
+    const element = (
+      <div className="container">
+        <span>Hello</span>
+        <span>World</span>
+      </div>
+    );
+    ReactDOM.render(element, rootElement);
+  </script>  
+</body>
+
+<!-- Kent's code examples on interpolation, composition and spreading props-->
+<!-- Using the children attribute helps us to have self closing divs -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+    const myChildren = "Hello World"
+    const myClassName = "container"
+    const element = <div className={myClassName} children={myChildren}/>
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+    const helloChild = "Hello";
+    const worldChild = "World";
+    const myClassName = "container";
+    const element = (
+      <div className={myClassName}>
+        {helloChild}
+        {worldChild}
+      </div>
+    );
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+    const children = "Hello World";
+    const className = "container"
     const props = {children, className}
-    const element = <div {...props} />
-    ReactDOM.render(element, rootElement)
+    const element = (
+      <div id="app-root" {...props} className="not-container"/>
+    );
+    ReactDOM.render(element, rootElement);
   </script>
 </body>

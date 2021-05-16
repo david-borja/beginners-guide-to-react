@@ -1,3 +1,149 @@
+<!-- Here we are just checking the type of the "firstName" prop -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+
+    function SayHello({ firstName, lastName }) {
+      return (
+        <div>
+          Hello {firstName} {lastName}!
+        </div>
+      );
+    }
+
+    SayHello.propTypes = {
+      firstName(props, propName, componentName) {
+        if (typeof props[propName] !== "string") {
+          throw new Error(
+            `Hey, the component ${componentName} needs the prop ${propName} to be a string, but you passed a ${typeof props[
+              propName
+            ]}`
+          );
+        }
+      },
+    };
+
+    const element = <SayHello firstName={false} />;
+
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- Let's refactor to check multiple props. Notice that in object literals we can use a shorthand to write methods without the "function" keyword. Also 'string' is not a reserved keyword, is just how we name our function inside of the PropTypes (which is also just convention). NOTE: if we install the "prop-types" package, we MUST follow this convention. -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+
+    function SayHello({ firstName, lastName }) {
+      return (
+        <div>
+          Hello {firstName} {lastName}!
+        </div>
+      );
+    }
+
+    const PropTypes = {
+      string(props, propName, componentName) {
+        if (typeof props[propName] !== "string") {
+          throw new Error(
+            `Hey, the component ${componentName} needs the prop ${propName} to be a string, but you passed a ${typeof props[
+              propName
+            ]}`
+          );
+        }
+      },
+    };
+
+    SayHello.propTypes = {
+      firstName: PropTypes.string,
+      secondName: PropTypes.string,
+    };
+
+    const element = <SayHello firstName={false} />;
+
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- Just to make sure it also works, here we changed "PropTypes" for "myPropTypes", and "string" for "customString". DON'T DO THIS -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+
+    function SayHello({ firstName, lastName }) {
+      return (
+        <div>
+          Hello {firstName} {lastName}!
+        </div>
+      );
+    }
+
+    const myPropTypes = {
+      customString(props, propName, componentName) {
+        if (typeof props[propName] !== "string") {
+          throw new Error(
+            `Hey, the component ${componentName} needs the prop ${propName} to be a string, but you passed a ${typeof props[
+              propName
+            ]}`
+          );
+        }
+      },
+    };
+
+    SayHello.propTypes = {
+      firstName: myPropTypes.customString,
+      secondName: myPropTypes.customString,
+    };
+
+    const element = <SayHello firstName={false} />;
+
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- This is so common that the React team created the "prop-types" package, which creates a global variable called "PropTypes". Now things work a bit differently: we are just getting a warning for the firstName, because .propTypes by default are not required (and we are not passing "lastName"). If we want to make sure that is required, we have to specify it with .isRequired-->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+
+    function SayHello({ firstName, lastName }) {
+      return (
+        <div>
+          Hello {firstName} {lastName}!
+        </div>
+      );
+    }
+
+    SayHello.propTypes = {
+      firstName: PropTypes.string.isRequired,
+      secondName: PropTypes.string.isRequired,
+    };
+
+    const element = <SayHello firstName={false} />;
+
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- One reasonable concern we might have about propTypes is that it adds a fair amount of code that needs to be run when rendering, and that can hinder performance in production. If we take a look at the minified version of React, we notice that we are not getting those warnings. And that's because in production, propTypes are not applied. 
+We can even add a Babel plugin that will remove the propTypes from our source code for production (check resources below)-->
 <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.production.min.js"></script>
@@ -5,22 +151,37 @@
   <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
   <script src="https://unpkg.com/prop-types@15.6.1/prop-types.js"></script>
   <script type="text/babel">
-    const rootElement = document.getElementById('root')
+    const rootElement = document.getElementById("root");
 
-    function SayHello({firstName, lastName}) {
+    function SayHello({ firstName, lastName }) {
       return (
         <div>
           Hello {firstName} {lastName}!
         </div>
-      )
+      );
     }
+
     SayHello.propTypes = {
       firstName: PropTypes.string.isRequired,
-      lastName: PropTypes.string.isRequired,
-    }
+      secondName: PropTypes.string.isRequired,
+    };
 
-    const element = <SayHello firstName={false} />
+    const element = <SayHello firstName={false} />;
 
-    ReactDOM.render(element, rootElement)
+    ReactDOM.render(element, rootElement);
   </script>
 </body>
+
+<!-- DOUBTS:
+  What's the difference between 
+    - throw new Error()
+    - return new Error()
+  ?
+  I don't understand why the instructor uses 'return new Error()'
+  I'm just writing 'throw' in this exercise because it makes more sense to me
+ -->
+
+<!-- RESOURCES:
+  https://javascript.info/object-methods
+  https://www.npmjs.com/package/babel-plugin-transform-react-remove-prop-types
+-->
