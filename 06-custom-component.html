@@ -1,20 +1,95 @@
+<!-- Mithi's solution. In this case, we are manually passing message as a function (NOT as a string representing an HTML element), so it kind of works. However, in order to follow the convention that Babel understands, we have should use a capitalized first letter. -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+    function message({children}) {
+      return <div className="message">{children}</div>
+    }
+    const element = (
+      <div className="container">
+        {React.createElement(message, {children: "Hello World"})}
+        {React.createElement(message, null, "Hello Something")}
+      </div>
+    );
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- If we do this, the browser complains and tells us to use a capital letter if we want to render a React component. Otherwise, what get's passed to the first argument in React.createElement is "message", as if it were an HTML element -->
 <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
   <script type="text/babel">
-    function Message({children}) {
-      return <div className="message">{children}</div>
-    }
-
+    const rootElement = document.getElementById("root");
+    const message = (props) => <div className="message">{props.msg}</div>
     const element = (
       <div className="container">
-        <Message>Hello World</Message>
-        <Message>Goodbye World</Message>
+        {message({msg: "Hello World"})}
+        {message({msg: "Goodbye World"})}
       </div>
-    )
-
-    ReactDOM.render(element, document.getElementById('root'))
+    );
+    ReactDOM.render(element, rootElement);
   </script>
 </body>
+
+<!-- When we give a capital letter in JSX, that's the same as calling React.createElement with the function that you are referencing (in this case: Message). That allows us to create a Component -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+    const Message = (props) => <div className="message">{props.msg}</div>
+    const customStr = "Whatever";
+    const element = (
+      <div className="container">
+        <Message msg="Hello Something"></Message>
+        <Message msg={customStr}/>
+        {Message({msg: "Hello World"})}
+        {Message({msg: "Goodbye World"})}
+      </div>
+    );
+
+    console.log(<div>Hello World</div>);
+    console.log(<Message>Hello World</Message>);
+
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- We can make it declarative and nest the messages as if they are the children prop -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+    const Message = (props) => <div className="message">{props.children}</div>
+    const customStr = "Whatever";
+    const element = (
+      <div className="container">
+        <Message>Hello Something</Message>     
+        <Message children="Whatever"/>
+        {Message({children: "Hello World"})}
+        {Message({children: "Goodbye World"})}
+      </div>
+    );
+
+    console.log(<div>Hello World</div>);
+    console.log(<Message>Hello World</Message>);
+
+    ReactDOM.render(element, rootElement);
+  </script>
+</body>
+
+<!-- RESOURCES:
+  https://developer.mozilla.org/en-US/docs/Web/HTML/Inline_elements
+-->
