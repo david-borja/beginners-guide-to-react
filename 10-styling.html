@@ -1,3 +1,5 @@
+<!-- 1 Starter code
+The style prop accepts an object rather than a string of styles. It will be the same property names that you get if you use getComputedStyle (camelCased instead of kebab-case -> don't forget the quotes for the CSS value) -->
 <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
@@ -25,32 +27,422 @@
     }
   </style>
   <script type="text/babel">
-    function Box({style, size, className = '', ...rest}) {
-      const sizeClassName = size ? `box--${size}` : ''
+    const element = (
+      <div>
+        <div
+          className="box box--small"
+          style={{ fontStyle: "italic", backgroundColor: "lightblue" }}
+        >
+          small lightblue box
+        </div>
+        <div
+          className="box box--medium"
+          style={{ fontStyle: "italic", backgroundColor: "pink" }}
+        >
+          medium pink box
+        </div>
+        <div
+          className="box box--large"
+          style={{ fontStyle: "italic", backgroundColor: "orange" }}
+        >
+          large orange box
+        </div>
+      </div>
+    );
+
+    ReactDOM.render(element, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- 2 My solution: We can reduce duplication by creating a Box component -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <style>
+    .box {
+      border: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    .box--large {
+      width: 270px;
+      height: 270px;
+    }
+    .box--medium {
+      width: 180px;
+      height: 180px;
+    }
+    .box--small {
+      width: 90px;
+      height: 90px;
+    }
+  </style>
+  <script type="text/babel">
+    const Box = ({ size, color, text }) => (
+      <div className={`box box--${size}`} style={{ backgroundColor: color }}>
+        {text}
+      </div>
+    );
+
+    const element = (
+      <div>
+        <Box text="small lightblue box" color="lightblue" size="small" />
+        <Box text="medium pink box" color="pink" size="medium" />
+        <Box text="large orange box" color="orange" size="large" />
+      </div>
+    );
+
+    ReactDOM.render(element, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- 3 Solution, component refactor. Remember that we can use divs with self closing tags in JSX. However, observe that we are overwriting the className property when we spread props -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <style>
+    .box {
+      border: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    .box--large {
+      width: 270px;
+      height: 270px;
+    }
+    .box--medium {
+      width: 180px;
+      height: 180px;
+    }
+    .box--small {
+      width: 90px;
+      height: 90px;
+    }
+  </style>
+  <script type="text/babel">
+    function Box(props) {
+      return <div className="box" {...props} />;
+    }
+    const element = (
+      <div>
+        <Box
+          className="box--small"
+          style={{ fontStyle: "italic", backgroundColor: "lightblue" }}
+        >
+          small lightblue box
+        </Box>
+        <Box
+          className="box--medium"
+          style={{ fontStyle: "italic", backgroundColor: "pink" }}
+        >
+          medium pink box
+        </Box>
+        <Box
+          className="box--large"
+          style={{ fontStyle: "italic", backgroundColor: "orange" }}
+        >
+          large orange box
+        </Box>
+      </div>
+    );
+
+    ReactDOM.render(element, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- 4 Here is how we could combine the className(s) for boxes using a template literal. The problem could be that if for some reason we don't pass className as a prop, is gonna set "box undefined" as className. It's probably not a big issue. We can fix it by adding a default value of an empty string, and even trim the space if we want -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <style>
+    .box {
+      border: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    .box--large {
+      width: 270px;
+      height: 270px;
+    }
+    .box--medium {
+      width: 180px;
+      height: 180px;
+    }
+    .box--small {
+      width: 90px;
+      height: 90px;
+    }
+  </style>
+  <script type="text/babel">
+    function Box({ className = "", ...rest }) {
+      return <div className={`box ${className}`.trim()} {...rest} />;
+    }
+    const element = (
+      <div>
+        <Box
+          className="box--small"
+          style={{ fontStyle: "italic", backgroundColor: "lightblue" }}
+        >
+          small lightblue box
+        </Box>
+        <Box
+          className="box--medium"
+          style={{ fontStyle: "italic", backgroundColor: "pink" }}
+        >
+          medium pink box
+        </Box>
+        <Box
+          className="box--large"
+          style={{ fontStyle: "italic", backgroundColor: "orange" }}
+        >
+          large orange box
+        </Box>
+      </div>
+    );
+
+    ReactDOM.render(element, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- 5 The other thing that is common to this boxes is the font-style. Again, we need to compose the style object manually so we don't overwrite it. By writing the code this way, anyone that wants to have a Box can use this component, and it will have the box className and italics applied automatically. This way of writing components can help us to separate our user code from the styling concerns of our specific component -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <style>
+    .box {
+      border: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    .box--large {
+      width: 270px;
+      height: 270px;
+    }
+    .box--medium {
+      width: 180px;
+      height: 180px;
+    }
+    .box--small {
+      width: 90px;
+      height: 90px;
+    }
+  </style>
+  <script type="text/babel">
+    function Box({ className = "", style, ...rest }) {
+      return (
+        <div
+          className={`box ${className}`.trim()}
+          style={{ fontStyle: "italic", ...style }}
+          {...rest}
+        />
+      );
+    }
+    const element = (
+      <div>
+        <Box className="box--small" style={{ backgroundColor: "lightblue" }}>
+          small lightblue box
+        </Box>
+        <Box className="box--medium" style={{ backgroundColor: "pink" }}>
+          medium pink box
+        </Box>
+        <Box className="box--large" style={{ backgroundColor: "orange" }}>
+          large orange box
+        </Box>
+      </div>
+    );
+
+    ReactDOM.render(element, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- 6 Rather than a className, it would be better to accept a size prop. This way users don't need to concern themselves with the className that needs to be applied. This way we separate our components props from the classNames used to style them. That said, observe how we can still apply our own classNames (notice the third box that we left as an example) and syles if we want to, because all those are gonna be combined with whatever is happenning in the box.
+Notice that we are using className, as opposed to using "class" like in HTML. className is the DOM property that we use to access the class attribute on DOM nodes. "class" is a reserved keyword in JS -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <style>
+    .box {
+      border: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    .box--large {
+      width: 270px;
+      height: 270px;
+    }
+    .box--medium {
+      width: 180px;
+      height: 180px;
+    }
+    .box--small {
+      width: 90px;
+      height: 90px;
+    }
+  </style>
+  <script type="text/babel">
+    function Box({ className = "", style, size, ...rest }) {
+      const sizeClassName = size ? `box--${size}` : "";
+      return (
+        <div
+          className={`box ${className} ${sizeClassName}`.trim()}
+          style={{ fontStyle: "italic", ...style }}
+          {...rest}
+        />
+      );
+    }
+    const element = (
+      <div>
+        <Box size="small" style={{ backgroundColor: "lightblue" }}>
+          small lightblue box
+        </Box>
+        <Box size="medium" style={{ backgroundColor: "pink" }}>
+          medium pink box
+        </Box>
+        <Box className="box--large" style={{ backgroundColor: "orange" }}>
+          large orange box
+        </Box>
+      </div>
+    );
+
+    ReactDOM.render(element, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- 7 In addition, we can take all of our props and make a props object. One thing that is useful is that, the style prop being an object of styles rather than a string of styles, makes it a lot easier to combine objects of styles. On the other hand, with className we have a string, so we can solve it using template strings. In the className and style, the order matter. But epecially in style, if we are spreading other styles, be aware to put them AT THE END of the style object. Otherwise, the user of the component has no way to overwrite the default component style -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <style>
+    .box {
+      border: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    .box--large {
+      width: 270px;
+      height: 270px;
+    }
+    .box--medium {
+      width: 180px;
+      height: 180px;
+    }
+    .box--small {
+      width: 90px;
+      height: 90px;
+    }
+  </style>
+  <script type="text/babel">
+    function Box({ className = "", style, size, ...rest }) {
+      const sizeClassName = size ? `box--${size}` : "";
+      const props = {
+        className: `box ${className} ${sizeClassName}`.trim(),
+        style: { fontStyle: "italic", ...style },
+        ...rest,
+      };
+      return <div {...props} />;
+    }
+    const element = (
+      <div>
+        <Box size="small" style={{ backgroundColor: "lightblue" }}>
+          small lightblue box
+        </Box>
+        <Box size="medium" style={{ backgroundColor: "pink" }}>
+          medium pink box
+        </Box>
+        <Box className="box--large" style={{ backgroundColor: "orange" }}>
+          large orange box
+        </Box>
+      </div>
+    );
+
+    ReactDOM.render(element, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- Given code -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <style>
+    .box {
+      border: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+    }
+    .box--large {
+      width: 270px;
+      height: 270px;
+    }
+    .box--medium {
+      width: 180px;
+      height: 180px;
+    }
+    .box--small {
+      width: 90px;
+      height: 90px;
+    }
+  </style>
+  <script type="text/babel">
+    function Box({ style, size, className = "", ...rest }) {
+      const sizeClassName = size ? `box--${size}` : "";
       return (
         <div
           className={`box ${className} ${sizeClassName}`}
-          style={{fontStyle: 'italic', ...style}}
+          style={{ fontStyle: "italic", ...style }}
           {...rest}
         />
-      )
+      );
     }
 
     const element = (
       <div>
-        <Box size="small" style={{backgroundColor: 'lightblue'}}>
+        <Box size="small" style={{ backgroundColor: "lightblue" }}>
           small lightblue box
         </Box>
-        <Box size="medium" style={{backgroundColor: 'pink'}}>
+        <Box size="medium" style={{ backgroundColor: "pink" }}>
           medium pink box
         </Box>
-        <Box size="large" style={{backgroundColor: 'orange'}}>
+        <Box size="large" style={{ backgroundColor: "orange" }}>
           large orange box
         </Box>
         <Box>sizeless box</Box>
       </div>
-    )
+    );
 
-    ReactDOM.render(element, document.getElementById('root'))
+    ReactDOM.render(element, document.getElementById("root"));
   </script>
 </body>
+
+<!-- RESOURCES:
+  https://developer.mozilla.org/en-US/docs/Web/API/Window/getComputedStyle
+  https://zellwk.com/blog/css-values-in-js/
+  https://es.javascript.info/styles-and-classes
+-->
