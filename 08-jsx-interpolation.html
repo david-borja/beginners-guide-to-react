@@ -1,17 +1,21 @@
+<!-- My solution -->
 <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
   <script type="text/babel">
-    function CharacterCount({text}) {
-      return (
+    // The text "Hello World" has 11 characters
+    // The text "" has No characters
+    function CharacterCount({ text }) {
+      const numChar = text.length;
+      return numChar ? (
         <div>
-          {`The text "${text}" has `}
-          {text.length ? <strong>{text.length}</strong> : 'No'}
-          {' characters'}
+          The text "{text}" has {numChar} characters
         </div>
-      )
+      ) : (
+        <div>The text "{text}" has No characters</div>
+      );
     }
 
     const element = (
@@ -19,8 +23,69 @@
         <CharacterCount text="Hello World" />
         <CharacterCount text="" />
       </>
-    )
+    );
 
-    ReactDOM.render(element, document.getElementById('root'))
+    ReactDOM.render(element, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- In JS expressions, we are NOT allowed to do for loops, or if statements. It has to be an expression that evaluates to some value. Why? Because it doesn't make any sense to pass an if statement as an argument to a function. In this case, as the third argument to React.createElement()-->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    // The text "Hello World" has 11 characters
+    // The text "" has No characters
+    function CharacterCount({ text }) {
+      // js
+      return (
+        // jsx
+        <div>
+          {/* js */ `The text "${text}" has `}
+          {text.length ? <strong>{text.length}</strong> : "No"}
+          {" characters"}
+        </div>
+        // js
+      );
+    }
+
+    const element = (
+      <>
+        <CharacterCount text="Hello World" />
+        <CharacterCount text="" />
+      </>
+    );
+
+    ReactDOM.render(element, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- Given code -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    function CharacterCount({ text }) {
+      return (
+        <div>
+          {`The text "${text}" has `}
+          {text.length ? <strong>{text.length}</strong> : "No"}
+          {" characters"}
+        </div>
+      );
+    }
+
+    const element = (
+      <>
+        <CharacterCount text="Hello World" />
+        <CharacterCount text="" />
+      </>
+    );
+
+    ReactDOM.render(element, document.getElementById("root"));
   </script>
 </body>
