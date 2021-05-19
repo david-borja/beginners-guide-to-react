@@ -1,3 +1,80 @@
+<!-- This way, all that is updating are the input values, and we do not lose focus after clicking it. That's because when we create React elements, and give them to ReactDOM, it's gonna compare them with the elements from the last render, and update the DOM surgically   -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+
+    function tick() {
+      const time = new Date().toLocaleTimeString();
+      const element = (
+        <div>
+          <div>Hello</div>
+          {time}
+          <input value={time} />
+          <input value={time} />
+        </div>
+      );
+      ReactDOM.render(element, rootElement);
+    }
+
+    setInterval(tick, 1000);
+  </script>
+</body>
+
+<!-- Using an HTML string and innerHTML, it's updating the entire rootElement every second. That causes it to lose focus after we click the input -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+
+    function tick() {
+      const time = new Date().toLocaleTimeString();
+      const element = `<div>
+        <div>Hello</div>
+        ${time}
+        <input value="${time}">
+      </div>`;
+
+      rootElement.innerHTML = element;
+      // ReactDOM.render(element, rootElement);
+    }
+
+    setInterval(tick, 1000);
+  </script>
+</body>
+
+<!-- This way using JSX and ReactDOM, the only thing that's updating is the clock time (not the Hello div) -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+
+    function tick() {
+      const time = new Date().toLocaleTimeString();
+      const element = (
+        <div>
+          <div>Hello</div>
+          {time}
+        </div>
+      );
+
+      ReactDOM.render(element, rootElement);
+    }
+
+    setInterval(tick, 1000);
+  </script>
+</body>
+
+<!-- Given code -->
 <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
