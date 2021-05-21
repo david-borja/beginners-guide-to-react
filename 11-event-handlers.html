@@ -1,4 +1,111 @@
+<!-- 1: My solution with inline arrow functions. Notice that in the onBlur event, what we need is to get the value of the input that is receiving the onBlur event. As an argument to the event handler, we receive the event. Then we can use that event to get the target of the event, which will be our input. Then we'll get that value from the input.
+ -->
 <body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+
+    const state = { eventCount: 0, username: "" };
+
+    function App() {
+      return (
+        <div>
+          <p>There have been {state.eventCount} events.</p>
+          <p>
+            <button
+              onClick={() => setState({ eventCount: state.eventCount + 1 })}
+            >
+              Click Me
+            </button>
+          </p>
+          <p>You typed: {state.username}</p>
+          <p>
+            <input
+              onBlur={(event) => setState({ username: event.target.value })}
+            />
+          </p>
+        </div>
+      );
+    }
+
+    function setState(newState) {
+      console.log("newState: ", newState);
+      Object.assign(state, newState);
+      console.log("updated state: ", state);
+      renderApp();
+    }
+
+    function renderApp() {
+      ReactDOM.render(<App />, document.getElementById("root"));
+    }
+
+    renderApp();
+  </script>
+</body>
+
+<!-- 2: My solution with event handlers. If we console.log the event, we notice that we get a synthetic event object. That's not the native event. The native event is this property nativeEvent. React does some serious performance optimizations for our events and that's what this synthetic event thing is all about. Most of the time you don't need access to the native event, but if you ever do then you can say event.nativeEvent. 
+ One cool thing about React's event system is that you pass the event handler directly to the element that you want to attach the event to, so it makes following the flow of events and state updates really straightforward.
+-->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    const rootElement = document.getElementById("root");
+
+    const state = { eventCount: 0, username: "" };
+
+    function handleClick() {
+      setState({ eventCount: state.eventCount + 1 });
+    }
+
+    function handleChange(event) {
+      console.log(event);
+      setState({ username: event.target.value });
+    }
+
+    function App() {
+      return (
+        <div>
+          <p>There have been {state.eventCount} events.</p>
+          <p>
+            <button onClick={handleClick}>Click Me</button>
+          </p>
+          <p>You typed: {state.username}</p>
+          <p>
+            Here we pass the event
+            <input onBlur={(event) => handleChange(event)} />
+          </p>
+          <p>
+            This also works, because in React the event gets attached
+            automatically
+            <input onBlur={handleChange} />
+          </p>
+        </div>
+      );
+    }
+
+    function setState(newState) {
+      console.log("newState: ", newState);
+      Object.assign(state, newState);
+      console.log("updated state: ", state);
+      renderApp();
+    }
+
+    function renderApp() {
+      ReactDOM.render(<App />, document.getElementById("root"));
+    }
+
+    renderApp();
+  </script>
+</body>
+
+<!-- Given code -->
+<!-- <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
@@ -42,4 +149,10 @@
 
     renderApp()
   </script>
-</body>
+</body> -->
+
+<!-- RESOURCES:
+  Object.assign(): https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+  SyntheticEvent: https://reactjs.org/docs/events.html
+  onBlur (opposite of onFocus ): https://reactjs.org/docs/events.html#focus-events
+-->
