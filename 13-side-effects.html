@@ -1,4 +1,35 @@
+<!-- By adding a value to the input field, we now have a controlled input -->
 <body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    function Greeting() {
+      const [name, setName] = React.useState(
+        window.localStorage.getItem("name") || ""
+      );
+      const handleChange = (event) => setName(event.target.value);
+
+      React.useEffect(() => window.localStorage.setItem("name", name));
+
+      return (
+        <div>
+          <form>
+            <label htmlFor="name">Name: </label>
+            <input value={name} onChange={handleChange} id="name" />
+          </form>
+          {name ? <strong>Hello {name}</strong> : "Please type your name"}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<Greeting />, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- Given code -->
+<!-- <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
@@ -28,4 +59,13 @@
 
     ReactDOM.render(<Greeting />, document.getElementById('root'))
   </script>
-</body>
+</body> -->
+
+<!-- RESOURCES:
+  https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+-->
+
+<!-- DOUBTS
+  In this case what we save in localStorage is just a string. But, what if we had to recover something more complex like an object or an array? We would have to use the JSON.parse() method like in the movie-seats project. However, I tried implementing this parsing method to this example, and it didn't work. Perhaps the solution is something like what is suggested on this post:
+  https://es.stackoverflow.com/questions/61194/error-al-retornar-json-unexpected-token-in-json-at-position-0
+-->
