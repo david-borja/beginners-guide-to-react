@@ -1,4 +1,74 @@
+<!-- 1 Starter code -->
 <body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    function Greeting() {
+      const [name, setName] = React.useState(
+        window.localStorage.getItem("name") || ""
+      );
+
+      React.useEffect(() => {
+        window.localStorage.setItem("name", name);
+      });
+
+      const handleChange = (event) => setName(event.target.value);
+
+      return (
+        <div>
+          <form>
+            <label htmlFor="name">Name: </label>
+            <input value={name} onChange={handleChange} id="name" />
+          </form>
+          {name ? <strong>Hello {name}</strong> : "Please type your name"}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<Greeting />, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- 2: We only need the component to read into localStorage for the initialization of our state, we do NOT need it to read into localStorage everytime we rerender. To combat this React.useState has a lazy initialization feature: we can provide a function as the initial value. That function will ONLY be called when it is absolutely necessary to retrieve the initial value (on the first render). NOTE: the function is called synchronously, and it is expected to be synchronous -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    function Greeting() {
+      const [name, setName] = React.useState(() => {
+        console.log("running initialization");
+        return window.localStorage.getItem("name") || "";
+      });
+
+      console.log("rerendered");
+
+      React.useEffect(() => {
+        window.localStorage.setItem("name", name);
+      });
+
+      const handleChange = (event) => setName(event.target.value);
+
+      return (
+        <div>
+          <form>
+            <label htmlFor="name">Name: </label>
+            <input value={name} onChange={handleChange} id="name" />
+          </form>
+          {name ? <strong>Hello {name}</strong> : "Please type your name"}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<Greeting />, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- Given code -->
+<!-- <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
@@ -28,4 +98,4 @@
 
     ReactDOM.render(<Greeting />, document.getElementById('root'))
   </script>
-</body>
+</body> -->

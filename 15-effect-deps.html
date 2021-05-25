@@ -1,4 +1,96 @@
+<!-- STARTER CODE. Every time the Greeting component rerenders, the useEffect is gonna be called -->
 <body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    function Greeting() {
+      const [name, setName] = React.useState(
+        () => window.localStorage.getItem("name") || ""
+      );
+
+      React.useEffect(() => {
+        console.log("greeting useEffect")
+        window.localStorage.setItem("name", name);
+      });
+
+      const handleChange = (event) => setName(event.target.value);
+
+      return (
+        <div>
+          <form>
+            <label htmlFor="name">Name: </label>
+            <input value={name} onChange={handleChange} id="name" />
+          </form>
+          {name ? <strong>Hello {name}</strong> : "Please type your name"}
+        </div>
+      );
+    }
+
+    function App() {
+      const [count, setCount] = React.useState(0);
+      return (
+        <>
+          <button onClick={() => setCount((c) => c + 1)}>{count}</button>
+          <Greeting />
+        </>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- 2 However, the greeting useEffect doesn't need to be run when we click the button, because the name value hasn't changed. We only need to synchronize the localStorage value with the name value, which is the state of the Greeting component. For this, we can pass the name to the dependency array. If we passed an empy array instead in this example, when the user types, the state of the app changes, but it doesn't keep it in sync with the localStorage. So, if the user refreshes the page, an older localStorage gets loaded and the user loses information. 
+In an effort to avoid that we make this kind of mistakes, the react team has created an ESLint plugin: https://www.npmjs.com/package/eslint-plugin-react-hooks
+We can use it to make sure the dependency array is kept up to date, and actually keep it up to date automatically for us if we use its exhaustive-deps tool
+-->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    function Greeting() {
+      const [name, setName] = React.useState(
+        () => window.localStorage.getItem("name") || ""
+      );
+
+      React.useEffect(() => {
+        console.log("greeting useEffect");
+        window.localStorage.setItem("name", name);
+      }, [name]);
+
+      const handleChange = (event) => setName(event.target.value);
+
+      return (
+        <div>
+          <form>
+            <label htmlFor="name">Name: </label>
+            <input value={name} onChange={handleChange} id="name" />
+          </form>
+          {name ? <strong>Hello {name}</strong> : "Please type your name"}
+        </div>
+      );
+    }
+
+    function App() {
+      const [count, setCount] = React.useState(0);
+      return (
+        <>
+          <button onClick={() => setCount((c) => c + 1)}>{count}</button>
+          <Greeting />
+        </>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- GIVEN CODE -->
+<!-- <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
@@ -38,4 +130,4 @@
 
     ReactDOM.render(<App />, document.getElementById('root'))
   </script>
-</body>
+</body> -->
