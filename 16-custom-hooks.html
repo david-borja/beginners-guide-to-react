@@ -1,4 +1,80 @@
+<!-- STARTER CODE -->
 <body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    function Greeting() {
+      const [name, setName] = React.useState(
+        () => window.localStorage.getItem("name") || ""
+      );
+
+      React.useEffect(() => {
+        window.localStorage.setItem("name", name);
+      }, [state]);
+
+      const handleChange = (event) => setName(event.target.value);
+
+      return (
+        <div>
+          <form>
+            <label htmlFor="name">Name: </label>
+            <input value={name} onChange={handleChange} id="name" />
+          </form>
+          {name ? <strong>Hello {name}</strong> : "Please type your name"}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<Greeting />, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- 1:The logic that we have here for storing some state into localStorage and keeping it synchronized could be useful in other areas of our application. What we're going to do is make a function. We'll call that useLocalStorageState(), and then we'll move these lines of code into that function, and we'll replace them with a call to that function. We need to generalize the code that's in our function. Prefacing our function with "use" is a convention, so the eslint-plugin-react-hooks is able to enforce the same recomendations and rules on our custom hooks as it is on the built-in hooks. Actually, we made a mistake in the dependency array: we need to also include the key. Why? Before we had our key hardcoded as "name", so our dependency array didn't need to include it. But now, the key could change. So now, if the users of this custom hook change the key, we need to update localStorage and not lose any of the user's work. -->
+<body>
+  <div id="root"></div>
+  <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+  <script type="text/babel">
+    function useLocalStorageState(key, defaultValue = "") {
+      const [state, setState] = React.useState(
+        () => window.localStorage.getItem(key) || defaultValue
+      );
+
+      const refContainer = React.useRef(key);
+
+      React.useEffect(() => {
+        window.localStorage.setItem(key, state);
+        console.log(refContainer);
+      }, [key, state]);
+      // When we call useLocalStorageState, we need to get access to the state value and to the state updater function, so we need to return this:
+      return [state, setState];
+    }
+
+    function Greeting() {
+      const [name, setName] = useLocalStorageState("name");
+
+      const handleChange = (event) => setName(event.target.value);
+
+      return (
+        <div>
+          <form>
+            <label htmlFor="name">Name: </label>
+            <input value={name} onChange={handleChange} id="name" />
+          </form>
+          {name ? <strong>Hello {name}</strong> : "Please type your name"}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<Greeting />, document.getElementById("root"));
+  </script>
+</body>
+
+<!-- GIVEN CODE -->
+<!-- <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
@@ -34,4 +110,4 @@
 
     ReactDOM.render(<Greeting />, document.getElementById('root'))
   </script>
-</body>
+</body> -->
