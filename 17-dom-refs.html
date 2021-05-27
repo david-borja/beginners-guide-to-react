@@ -1,3 +1,8 @@
+<!-- GIVEN CODE: We are using a library called vanilla-tilt, which takes a DOM node and makes it react to when the user mouses over that DOM node. But initially, the tilt-root is a react element, not a DOM node. And then React takes that element and renders it to the DOM. So we need React to give us the DOM node that it creates for this element, so we can wire up vanilla-tilt.js to it. 
+To do this, we're going to use a ref prop and we need to pass a ref which is an object that has a mutable current property.
+
+The reason that useRef is an object that has a current property is so that we can mutate the current property to be whatever we want without triggering a re-render of our component. We can use refs for more than just DOM nodes like we're using here. We can use it for any value that we want to keep track of and mutate over time without triggering a re-render of our component.
+ -->
 <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
@@ -43,40 +48,84 @@
     }
   </style>
   <script type="text/babel">
-    function Tilt({children}) {
-      const tiltRef = React.useRef()
+    function Tilt({ children }) {
+      // STARTER VERSION
+      // We use the React.useRef() hook
+      const tiltRef = React.useRef(
+        "we can pass an initial value for the useRef() here"
+      );
+      // Then the tiltRef is an object that has a current property. That current property is the current value for this ref object.
+      // In our case, because we're passing this ref to a div with a ref prop, that current property will be the DOM node that React creates for this div.
+
+      // When we console.log tiltRef.current we see it is undefined. The reason we see that is because at the time that this function runs, React has not created the DOM node for this div, so the tiltRef.current is currently undefined.
+      console.log(tiltRef.current);
+
+      // To solve this problem, we need to have some code that runs after React has updated the DOM and set our tiltRef.current property -> useEffect hook
 
       React.useEffect(() => {
-        const tiltNode = tiltRef.current
+        console.log("from the useEffect: ", tiltRef.current);
+        const tiltNode = tiltRef.current;
         const vanillaTiltOptions = {
           max: 25,
           speed: 400,
           glare: true,
-          'max-glare': 0.5,
-        }
-        VanillaTilt.init(tiltNode, vanillaTiltOptions)
+          "max-glare": 0.5,
+        };
+
+        VanillaTilt.init(tiltNode, vanillaTiltOptions); // this line adds a vanillaTilt property to our DOM node
+
+        /* If we unclick the show tilt checkbox, that will unmount the tilt component from the page removing the DOM node from the page. However, there's still a bunch of event handlers on that DOM node and several references to that DOM node from within the vanilla tilt library.
+
+        That means that the DOM node itself may not exist on the page but it does still exist in memory because there're references to it in vanilla-tilt. Unfortunately, this could lead to a memory leak. If we keep on mounting and unmounting this over and over and over again, then we're going to have a bunch of DOM node sitting around in memory that really aren't needed by the user anymore.
+
+        To combat this problem, we can return a function which will be called for every update of our tilt component. -> clean-up function */
+
         return () => {
-          tiltNode.vanillaTilt.destroy()
-        }
-      }, [])
+          // This will remove all references of our DOM node from vanilla-tilt and remove all event handlers so that we can avoid memory leaks with our tilt component.
+          tiltNode.vanillaTilt.destroy;
+        };
+        // Another thing we should do here is recognize that useEffect is going to be called on every re-render of our tilt component. That's not going to lead to any bugs but it is sub-optimal because what that means is that we're called destroy with vanilla-tilt and then we'll call init with vanilla-tilt between every render of our component.
+
+        // We don't need to do that because none of the things in this function can change with re-renders of our tilt component. We're going to add a dependency array here with all the dependencies of our function and because none of the variables in our useEffect callback can change, we don't need to list any dependencies here. So the useEffect will run only at mount time, and its clean-up function only when it unmounts.
+      }, []);
 
       return (
         <div ref={tiltRef} className="tilt-root">
           <div className="tilt-child">{children}</div>
         </div>
-      )
+      );
+      // FINAL VERSION OF FUNCTION TILT
+      // const tiltRef = React.useRef();
+      // React.useEffect(() => {
+      //   const tiltNode = tiltRef.current;
+      //   const vanillaTiltOptions = {
+      //     max: 25,
+      //     speed: 400,
+      //     glare: true,
+      //     "max-glare": 0.5,
+      //   };
+      //   VanillaTilt.init(tiltNode, vanillaTiltOptions);
+      //   return () => {
+      //     tiltNode.vanillaTilt.destroy();
+      //   };
+      // }, []);
+      // return (
+      //   <div ref={tiltRef} className="tilt-root">
+      //     <div className="tilt-child">{children}</div>
+      //   </div>
+      // );
     }
 
     function App() {
-      const [showTilt, setShowTilt] = React.useState(true)
+      const [showTilt, setShowTilt] = React.useState(true);
       return (
         <div>
           <label>
             <input
               type="checkbox"
               checked={showTilt}
-              onChange={e => setShowTilt(e.target.checked)}
-            />{' '}
+              onChange={(e) => setShowTilt(e.target.checked)}
+            />{" "}
             show tilt
           </label>
           {showTilt ? (
@@ -85,9 +134,9 @@
             </Tilt>
           ) : null}
         </div>
-      )
+      );
     }
 
-    ReactDOM.render(<App />, document.getElementById('root'))
+    ReactDOM.render(<App />, document.getElementById("root"));
   </script>
 </body>
