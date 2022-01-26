@@ -1,5 +1,5 @@
 <!-- STARTER CODE -->
-<body>
+<!-- <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
@@ -29,9 +29,15 @@
 
     ReactDOM.render(<Greeting />, document.getElementById("root"));
   </script>
-</body>
+</body> -->
 
-<!-- 1:The logic that we have here for storing some state into localStorage and keeping it synchronized could be useful in other areas of our application. What we're going to do is make a function. We'll call that useLocalStorageState(), and then we'll move these lines of code into that function, and we'll replace them with a call to that function. We need to generalize the code that's in our function. Prefacing our function with "use" is a convention, so the eslint-plugin-react-hooks is able to enforce the same recomendations and rules on our custom hooks as it is on the built-in hooks. Actually, we made a mistake in the dependency array: we need to also include the key. Why? Before we had our key hardcoded as "name", so our dependency array didn't need to include it. But now, the key could change. So now, if the users of this custom hook change the key, we need to update localStorage and not lose any of the user's work. -->
+<!-- 1:The logic that we have here for storing some state into localStorage and keeping it synchronized could be useful in other areas of our application. What we're going to do is make a function. We'll call that useLocalStorageState(), and then we'll move these lines of code into that function, and we'll replace them with a call to that function. We need to generalize the code that's in our function. Prefacing our function with "use" is a convention, so the eslint-plugin-react-hooks is able to enforce the same recomendations and rules on our custom hooks as it is on the built-in hooks. Actually, we made a mistake in the dependency array: we need to also include the key. Why? Before we had our key hardcoded as "name", so our dependency array didn't need to include it. But now, the key could change. So now, if the users of this custom hook change the key, we need to update localStorage and not lose any of the user's work. 
+
+EXTRA MILE EXERCISE: We could make this useLocalStorageState Hook a lot more robust by removing the item at the old key if that key has changed.
+
+Student's comment on this:
+Question about the exercise left to the reader (remove old key from localStorage): It first seemed to me calling our custom hook from Greeting with a changing key doesn't make sense. But then yes Greeting could get that key 'name' from its props. Greeting could get its key prop being "firstName", then later on after some change in its parent that would need to greet the user by lastName instead, its key prop could become "lastName". Well ok, then Greeting must become linked to lastName in localStorage. But ... what is the sense to delete firstName from localStorage at that moment just because perhaps temporarily we greet by last name? And what if firstName in localStorage is used from another part of the app? That is why I don't understand.
+-->
 <body>
   <div id="root"></div>
   <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
@@ -48,6 +54,20 @@
       React.useEffect(() => {
         window.localStorage.setItem(key, state);
         console.log(refContainer);
+        return () => {
+          console.log(
+            `1st: State of ${key} has changed -> Component rerendered with new ${key} state (React's magic updates the DOM surgically -> ONLY rerenders React elements linked to the ${key} state)`
+          );
+          console.log(
+            `2nd: Last useEffect's clean-up function runs -> All these logs are triggered from the clean-up function returned from the useEffect`
+          );
+          console.log(
+            "I'M HAVING A PROBLEM WITH THE THIRD CONSOLE.LOG, IT DOES NOT RETURN THE CURRENT STATE, BUT THE PREVIOUS ONE. STUDY HOW TO SOLVE IT HERE: https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state"
+          );
+          console.log(
+            `3rd: useEffect runs again -> The new value ${state} of the ${key} state gets set in the localStorage at the ${key} key`
+          );
+        };
       }, [key, state]);
       // When we call useLocalStorageState, we need to get access to the state value and to the state updater function, so we need to return this:
       return [state, setState];
@@ -55,16 +75,28 @@
 
     function Greeting() {
       const [name, setName] = useLocalStorageState("name");
+      const [surname, setSurname] = useLocalStorageState("surname");
 
-      const handleChange = (event) => setName(event.target.value);
+      const handleNameChange = (event) => setName(event.target.value);
+      const handleSurnameChange = (event) => setSurname(event.target.value);
 
       return (
         <div>
           <form>
             <label htmlFor="name">Name: </label>
-            <input value={name} onChange={handleChange} id="name" />
+            <input value={name} onChange={handleNameChange} id="name" />
           </form>
           {name ? <strong>Hello {name}</strong> : "Please type your name"}
+
+          <form>
+            <label htmlFor="surname">Surname: </label>
+            <input
+              value={surname}
+              onChange={handleSurnameChange}
+              id="surname"
+            />
+          </form>
+          {name ? <strong>Hello {surname}</strong> : "Please type your surname"}
         </div>
       );
     }
@@ -111,3 +143,13 @@
     ReactDOM.render(<Greeting />, document.getElementById('root'))
   </script>
 </body> -->
+
+<!-- RESOURCES:
+   React performs the cleanup when the component unmounts. However, as we learned earlier, effects run for every render and not just once. This is why React also cleans up effects from the previous render before running the effects next time. We’ll discuss why this helps avoid bugs and how to opt out of this behavior in case it creates performance issues later below. Taken from -> https://reactjs.org/docs/hooks-effect.html
+
+   Lifycycle with Hooks: when happens what?
+   https://medium.com/@guptagaruda/react-hooks-understanding-component-re-renders-9708ddee9928
+
+   USING HOOKS: How to get the previous props or state?
+   https://reactjs.org/docs/hooks-faq.html#how-to-get-the-previous-props-or-state
+-->
