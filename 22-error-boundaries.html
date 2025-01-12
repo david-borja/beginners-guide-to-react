@@ -52,3 +52,5 @@
     ReactDOM.render(<App />, document.getElementById('root'))
   </script>
 </body>
+
+<!-- The error boundary can be rendered anywhere in the tree. But take in account that the error boundary can handle any errors that are thrown by its descendants. The Err Bound is going to render something in place of all of its descendents. So is up to you to decide whether you want to replace all the app when there is an error. Or just a small part of it. Errors will be handled by the nearest error boundary. This error boundary will only handle errors that happen within the react callstack. But not if an api call fails -->
